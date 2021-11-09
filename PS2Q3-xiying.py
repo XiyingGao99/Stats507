@@ -136,3 +136,41 @@ sum_table = {'Demographic Dataset': demo_df.shape[0],
 sum_table_df = pd.DataFrame(sum_table, index = ['case number'])
 display(Markdown(sum_table_df.to_markdown(index=True)))
 
+# edit from PS4Q1
+path = './'
+demo_file = path + '/demo.feather'
+demo = pd.read_feather(demo_file)
+ohx_file = path + '/ohx.feather'
+ohx = pd.read_feather(ohx_file)
+demo.head()
+
+# merge
+demo = pd.merge(demo, ohx[['id', 'dentition_status']], on=['id'], how='left')
+demo.rename(columns={'dentition_status': 'ohx_status'}, inplace = True)
+
+# generate new variables
+demo['under_20'] = np.where((demo['age'] < 20), True, False)
+
+demo['college'] = np.where((demo['education'] == 'Some college or AA degree')|
+                          (demo['education'] == 'College graduate or above'), 
+                           True, False)
+
+demo['ohx'] = np.where((demo['exam_status'] == 
+                        'Both interviewed and MEC examined')&
+                       (demo['ohx_status'] == 'Complete'), 
+                       True, False)
+
+keep_col = ['id', 'gender', 'age', 'under_20', 'college', 
+            'exam_status', 'ohx_status', 'ohx']
+demo = demo[keep_col]
+
+demo_cat = {
+    'under_20': {True: 'age < 20', False: 'age >= 20'},
+    'college': {True: 'some college/college graduate',
+                False: 'No college/<20'},
+    'ohx': {True: 'complete', False: 'missing'}
+}
+
+for col, d in demo_cat.items():
+    demo[col] = pd.Categorical(demo[col].replace(d))
+
