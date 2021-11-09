@@ -4,4 +4,4 @@ The repo Stats507 is created for PS6 of the course Stats 507, which is aimed at 
 
 This repo contains a file, PS2Q3-xiying.py, which reads, cleans, and appends several data files from the National Health and Nutrition Examination Survey NHANES.
 
-The link to this file is: /Users/yiqiyiqi/git/Stats507/PS2Q3-xiying.py
+The link to this file is: ./PS2Q3-xiying.py
